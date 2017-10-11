@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Morse and ASCII Translator</title>
+    </head> 
+    
+    <body>
+        <script>
+            
+            while(true){
+                //get direction of translation
+                var direction= prompt("Would you like to translate 'to' or 'from' English?");
+                direction= direction.toLowerCase();
+                
+                //force proper direction input
+                while (true){
+                    if (direction != "to" && direction != "from"){
+                        direction= prompt("Please respond with either 'to' or 'from'");
+                        direction= direction.toLowerCase();
+                    } else {
+                        break;
+                    }
+                }
+
+                //get "language" to translate
+                var language= prompt("Would you like to translate " + direction + " 'Morse' or " + direction + " 'ASCII'?");
+                language= language.toLowerCase();
+                
+                //force proper "language" input
+                while (true){
+                    if (language != "morse" && language != "ascii"){
+                        direction= prompt("Please respond with either 'Morse' or 'ASCII'");
+                        direction= direction.toLowerCase();
+                    } else {
+                        break;
+                    }
+                }
+
+                //get message to translate
+                var message= prompt("Message to translate: ");
+
+                //run proper translation
+                if (direction == "from" && language == "ascii")
+                    alert(toAscii(message));
+                if (direction == "to" && language == "ascii")
+                    alert(fromAscii(message));
+                if (direction == "from" && language == "morse")
+                    alert(toMorse(message));
+                if (direction == "to" && language == "morse")
+                    alert(fromMorse(message));
+                
+                //run again?
+                var again= prompt("Would you like to translate something else?");
+                again= again.toLowerCase();
+                
+                while(true){
+                    if (again == "yes")
+                        break;
+                    else if (again == "no")
+                        exit();
+                    else {
+                        again= prompt("Please respond with either 'yes' to translate again or 'no' to exit the program");
+                        again= again.toLowerCase();
+                    }  
+                } 
+            }
+            
+            
+            //----------------------------------------------------------------------------------------------------------
+            //8-bit binary converter: to binary
+            //----------------------------------------------------------------------------------------------------------
+            function toBinary(num){
+                //convert from decimal to binary
+                var newNum= Number(num).toString(2);
+                
+                //make binary 8-bit
+                while (8 - newNum.length > 0) 
+                    newNum= "0" + newNum;
+                
+                //return value
+                return newNum + " ";   
+            }
+            
+            //----------------------------------------------------------------------------------------------------------
+            //8-bit binary converter: to decimal
+            //----------------------------------------------------------------------------------------------------------
+            function toDecimal(num){
+                //convert from binary to decimal
+                var newNum= parseInt(num, 2);
+                
+                //return value
+                return newNum.toString();   
+            }
+            
+            
+            //----------------------------------------------------------------------------------------------------------
+            //Convert to ASCII
+            //----------------------------------------------------------------------------------------------------------
+            function toAscii(message){
+                var upperCharecters= "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+                var lowerCharecters= "abcdefghijklmnopqrstuvwxyz";
+                
+                var newMessage= "";
+                
+                for (var i= 0; i < message.length; i++){
+                    if (message.charAt(i) == " "){
+                        newMessage+= ". ";
+                    } else {
+                        for (var j= 0; j < upperCharecters.length; j++){
+                            if (message.charAt(i) == upperCharecters.charAt(j)){
+                                newMessage+= toBinary(j + 65);
+                                break;
+                            } else if (message.charAt(i) == lowerCharecters.charAt(j)){
+                                newMessage+= toBinary(j + 97);
+                                break;
+                            } 
+                        } 
+                    }   
+                } 
+                
+                //return value
+                console.log(newMessage);
+                return newMessage;
+            }
+            
+            //----------------------------------------------------------------------------------------------------------
+            //Convert to English from ASCII
+            //----------------------------------------------------------------------------------------------------------
+            function fromAscii(message){
+                var upperCharecters= "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+                var lowerCharecters= "abcdefghijklmnopqrstuvwxyz";
+                
+                var messageArray= message.split(" ");
+                var decimal= "";
+                
+                var newMessage= "";
+                
+                for (var i= 0; i < messageArray.length; i++){
+                    if (messageArray[i] == "."){
+                        newMessage+= " ";
+                    }else {
+                        decimal= toDecimal(messageArray[i]);
+                        
+                        if (decimal >= 65 && decimal <= 90)
+                            newMessage+= upperCharecters.charAt(decimal - 65);  
+                        else if (decimal >= 97 && decimal <= 122)
+                            newMessage+= lowerCharecters.charAt(decimal - 97);
+                    }  
+                }
+                return newMessage;
+            }
+            
+            //----------------------------------------------------------------------------------------------------------
+            //Convert to Morse Code
+            //----------------------------------------------------------------------------------------------------------
+            function toMorse(message){
+                var upperCharecters= "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+                var lowerCharecters= "abcdefghijklmnopqrstuvwxyz";
+                
+                var morse= [".-", "-...", "-.-.", "-..", ".", "..-.", "--.", "....", "..",
+                           ".---", "-.-", ".-..", "--", "-.", "---", ".--.", "--.-",".-.",
+                           "...", "-", "..-", "...-", ".--", "-..-", "-.--", "--.."];
+                
+                var newMessage= "";
+                
+                
+                for (var i= 0; i < message.length; i++){
+                    if (message.charAt(i) == " "){
+                        newMessage+= "+ ";
+                    } else {
+                        for (var j= 0; j < upperCharecters.length; j++){
+                            if (message.charAt(i) == upperCharecters.charAt(j)){
+                                newMessage+= morse[j] + " ";
+                                break;
+                            } else if (message.charAt(i) == lowerCharecters.charAt(j)){
+                                newMessage+= morse[j] + " ";
+                                break;
+                            }    
+                        }
+                    }
+                }
+                
+                console.log(newMessage);
+                return newMessage;   
+            }
+            
+            //----------------------------------------------------------------------------------------------------------
+            //Convert to English from Morse Code
+            //----------------------------------------------------------------------------------------------------------
+            function fromMorse(message){
+                var upperCharecters= "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+                var lowerCharecters= "abcdefghijklmnopqrstuvwxyz";
+                
+                var morse= [".-", "-...", "-.-.", "-..", ".", "..-.", "--.", "....", "..",
+                           ".---", "-.-", ".-..", "--", "-.", "---", ".--.", "--.-",".-.",
+                           "...", "-", "..-", "...-", ".--", "-..-", "-.--", "--.."];
+                
+                var messageArray= message.split(" ");
+                
+                var newMessage= "";
+                
+                for (var i= 0; i < messageArray.length; i++){
+                    if (messageArray[i] == "+"){
+                        newMessage+= " ";
+                    }else {
+                        newMessage+= lowerCharecters.charAt(morse.indexOf(messageArray[i]));
+                    }  
+                }
+                return newMessage;      
+            }
+            
+        </script>
+    </body>
+</html>
